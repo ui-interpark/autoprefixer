@@ -1,72 +1,82 @@
-let autoprefixer = require('../lib/autoprefixer')
-
 let postcss = require('postcss')
 let path = require('path')
 let fs = require('fs')
 
+let autoprefixer = require('../lib/autoprefixer')
+
 let grider = autoprefixer({
-  browsers: ['Chrome 25', 'Edge 12', 'IE 10'],
+  overrideBrowserslist: ['Chrome 25', 'Edge 12', 'IE 10'],
   cascade: false,
   grid: 'autoplace'
 })
 
 let cleaner = autoprefixer({
-  browsers: []
+  overrideBrowserslist: []
 })
 let compiler = autoprefixer({
-  browsers: ['Chrome 25', 'Opera 12']
+  overrideBrowserslist: ['Chrome 25', 'Opera 12']
 })
 let filterer = autoprefixer({
-  browsers: ['Chrome 25', 'Safari 9', 'Firefox 39']
+  overrideBrowserslist: ['Chrome 25', 'Safari 9', 'Firefox 39']
 })
 let borderer = autoprefixer({
-  browsers: ['Safari 4', 'Firefox 3.6']
+  overrideBrowserslist: ['Safari 4', 'Firefox 3.6']
 })
 let cascader = autoprefixer({
-  browsers: ['Chrome > 19', 'Firefox 21', 'IE 10'],
+  overrideBrowserslist: ['Chrome > 19', 'Firefox 21', 'IE 10'],
   cascade: true
 })
 let keyframer = autoprefixer({
-  browsers: ['Chrome > 19', 'Opera 12']
+  overrideBrowserslist: ['Chrome > 19', 'Opera 12']
 })
 let flexboxer = autoprefixer({
-  browsers: ['Chrome > 19', 'Firefox 21', 'IE 10']
+  overrideBrowserslist: ['Chrome > 19', 'Firefox 21', 'IE 10']
 })
 let without3d = autoprefixer({
-  browsers: ['Opera 12', 'IE > 0']
+  overrideBrowserslist: ['Opera 12', 'IE > 0']
 })
 let supporter = autoprefixer({
-  browsers: ['Chrome 25', 'Chrome 28', 'IE > 0']
+  overrideBrowserslist: ['Chrome 25', 'Chrome 28', 'IE > 0']
 })
 let uncascader = autoprefixer({
-  browsers: ['Firefox 15']
+  overrideBrowserslist: ['Firefox 15']
 })
 let gradienter = autoprefixer({
-  browsers: ['Chrome 25', 'Opera 12', 'Android 2.3']
+  overrideBrowserslist: ['Chrome 25', 'Opera 12', 'Android 2.3']
+})
+let grouping = autoprefixer({
+  overrideBrowserslist: ['Chrome 25', 'Firefox > 17', 'IE 10', 'Edge 12'],
+  grid: 'autoplace'
 })
 let ffgradienter = autoprefixer({
-  browsers: ['Chrome 25', 'Opera 12', 'Firefox 6']
+  overrideBrowserslist: ['Chrome 25', 'Opera 12', 'Firefox 6']
 })
 let selectorer = autoprefixer({
-  browsers: ['Chrome 25', 'Firefox > 17', 'IE 10', 'Edge 12']
+  overrideBrowserslist: ['Chrome 25', 'Firefox > 17', 'IE 10', 'Edge 12']
+})
+let transitionSpec = autoprefixer({
+  overrideBrowserslist: ['Chrome > 19', 'Firefox 14', 'IE 10', 'Opera 12']
 })
 let intrinsicer = autoprefixer({
-  browsers: ['Chrome 25', 'Firefox 22', 'Safari 10']
+  overrideBrowserslist: ['Chrome 25', 'Firefox 22', 'Safari 10']
 })
 let imagerender = autoprefixer({
-  browsers: ['iOS 8', 'iOS 6.1', 'FF 22', 'IE 11', 'Opera 12']
+  overrideBrowserslist: ['iOS 8', 'iOS 6.1', 'FF 22', 'IE 11', 'Opera 12']
 })
 let backgrounder = autoprefixer({
-  browsers: ['Firefox 3.6', 'Android 2.3']
+  overrideBrowserslist: ['Firefox 3.6', 'Android 2.3']
 })
 let resolutioner = autoprefixer({
-  browsers: ['Safari 7', 'Opera 12']
+  overrideBrowserslist: ['Safari 7', 'Opera 12', 'Firefox 15']
 })
 let overscroller = autoprefixer({
-  browsers: ['Edge 16']
+  overrideBrowserslist: ['Edge 17']
 })
 let clipper = autoprefixer({
-  browsers: ['Safari 7', 'Edge 14']
+  overrideBrowserslist: ['Safari 7', 'Edge 14']
+})
+let example = autoprefixer({
+  overrideBrowserslist: ['defaults']
 })
 
 function prefixer (name) {
@@ -78,54 +88,68 @@ function prefixer (name) {
     name === 'grid-template-areas'
   ) {
     return grider
+  } else if (
+    name === 'filter' ||
+    name === 'advanced-filter' ||
+    name === 'element'
+  ) {
+    return filterer
+  } else if (
+    name === 'vendor-hack' ||
+    name === 'value-hack' ||
+    name === 'mistakes'
+  ) {
+    return cleaner
+  } else if (
+    name === 'flexbox' ||
+    name === 'flex-rewrite' ||
+    name === 'double' ||
+    name === 'viewport' ||
+    name === 'appearance'
+  ) {
+    return flexboxer
+  } else if (
+    name === 'intrinsic' ||
+    name === 'multicolumn' ||
+    name === 'logical' ||
+    name === 'text-decoration' ||
+    name === 'at-rules'
+  ) {
+    return intrinsicer
+  } else if (name === 'selectors' || name === 'placeholder') {
+    return selectorer
+  } else if (name === 'backdrop-filter' || name === 'overscroll-behavior') {
+    return overscroller
+  } else if (name === 'background-clip' || name === 'user-select') {
+    return clipper
+  } else if (name === 'image-rendering' || name === 'writing-mode') {
+    return imagerender
   } else if (name === 'keyframes') {
     return keyframer
   } else if (name === 'border-radius') {
     return borderer
-  } else if (name === 'vendor-hack' || name === 'value-hack') {
-    return cleaner
-  } else if (name === 'mistakes') {
-    return cleaner
   } else if (name === 'gradient') {
     return gradienter
   } else if (name === 'gradient-fix') {
     return ffgradienter
-  } else if (name === 'flexbox' || name === 'flex-rewrite') {
-    return flexboxer
-  } else if (name === 'double') {
-    return flexboxer
-  } else if (name === 'selectors' || name === 'placeholder') {
-    return selectorer
-  } else if (name === 'intrinsic' || name === 'multicolumn') {
-    return intrinsicer
+  } else if (name === 'grouping-rule') {
+    return grouping
   } else if (name === 'cascade') {
     return cascader
   } else if (name === '3d-transform') {
     return without3d
   } else if (name === 'background-size') {
     return backgrounder
-  } else if (name === 'background-clip') {
-    return clipper
   } else if (name === 'uncascade') {
     return uncascader
   } else if (name === 'example') {
-    return autoprefixer({ browsers: ['defaults'] })
-  } else if (name === 'viewport' || name === 'appearance') {
-    return flexboxer
+    return example
   } else if (name === 'resolution') {
     return resolutioner
-  } else if (name === 'filter' || name === 'advanced-filter') {
-    return filterer
-  } else if (name === 'element') {
-    return filterer
-  } else if (name === 'image-rendering' || name === 'writing-mode') {
-    return imagerender
-  } else if (name === 'logical' || name === 'text-decoration') {
-    return intrinsicer
   } else if (name === 'supports') {
     return supporter
-  } else if (name === 'overscroll-behavior') {
-    return overscroller
+  } else if (name === 'transition-spec') {
+    return transitionSpec
   } else {
     return compiler
   }
@@ -136,12 +160,16 @@ function read (name) {
   return fs.readFileSync(file).toString()
 }
 
+function universalizer (string) {
+  return string.replace(/\r/g, '')
+}
+
 function check (from, instance = prefixer(from)) {
   let input = read(from)
   let output = read(from + '.out')
   let result = postcss([instance]).process(input)
   expect(result.warnings()).toHaveLength(0)
-  expect(result.css).toEqual(output)
+  expect(universalizer(result.css)).toEqual(universalizer(output))
 }
 
 const COMMONS = [
@@ -156,13 +184,17 @@ const COMMONS = [
   'grid-template-areas', 'grid-gap', 'color-adjust'
 ]
 
+afterEach(() => {
+  delete process.env.AUTOPREFIXER_GRID
+})
+
 it('throws on wrong options', () => {
   expect(() => {
     autoprefixer({ browser: ['chrome 25', 'opera 12'] })
-  }).toThrowError(/browsers/)
+  }).toThrow(/overrideBrowserslist/)
   expect(() => {
     autoprefixer({ browserslist: ['chrome 25', 'opera 12'] })
-  }).toThrowError(/browsers/)
+  }).toThrow(/overrideBrowserslist/)
 })
 
 let options = {
@@ -173,8 +205,7 @@ let options = {
 let browsers = ['chrome 25', 'opera 12']
 
 it('sets options via options object', () => {
-  let allOptions = Object.assign(options, { browsers })
-
+  let allOptions = Object.assign(options, { overrideBrowserslist: browsers })
   let instance = autoprefixer(allOptions)
   expect(instance.options).toEqual(allOptions)
   expect(instance.browsers).toEqual(browsers)
@@ -196,6 +227,14 @@ it('has default browsers', () => {
   expect(autoprefixer.defaults.length).toBeDefined()
 })
 
+it('shows warning on browsers option', () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => true)
+  let instance = autoprefixer({ browsers: ['last 1 version'] })
+  expect(instance.browsers).toEqual(['last 1 version'])
+  expect(console.warn).toHaveBeenCalledTimes(1)
+  expect(console.warn.mock.calls[0][0]).toContain('overrideBrowserslist')
+})
+
 it('passes statistics to Browserslist', () => {
   let stats = {
     chrome: {
@@ -207,8 +246,9 @@ it('passes statistics to Browserslist', () => {
       11: 40
     }
   }
-  expect(autoprefixer({ browsers: '> 20% in my stats', stats }).info())
-    .toMatch(/Browsers:\n\s\sChrome: 11\n\s\sIE: 11\n/)
+  expect(autoprefixer({
+    overrideBrowserslist: '> 20% in my stats', stats
+  }).info()).toMatch(/Browsers:\n\s\sChrome: 11\n\s\sIE: 11\n/)
 })
 
 it('prefixes values', () => check('values'))
@@ -230,6 +270,9 @@ it('saves declaration style', () => check('style'))
 it('uses ignore next control comments', () => check('ignore-next'))
 it('uses block control comments', () => check('disabled'))
 it('has actual example in docs', () => check('example'))
+it('process grouping rules correctly', () => check('grouping-rule'))
+it('transition on vendor specific rule', () => check('transition-spec'))
+it('ignore prefix in vendor at rules', () => check('at-rules'))
 
 it('uses control comments to whole scope', () => {
   let input = read('scope')
@@ -247,7 +290,7 @@ it('uses control comments to whole scope', () => {
 it('sets grid option via comment', () => {
   let input = read('grid-status')
   let output = read('grid-status.out')
-  let ap = autoprefixer({ browsers: ['last 2 versions', 'Explorer 11'] })
+  let ap = autoprefixer({ overrideBrowserslist: ['last 2 versions', 'IE 11'] })
   let result = postcss([ap]).process(input)
 
   expect(result.css).toEqual(output)
@@ -316,7 +359,7 @@ it('media does not should nested', () => {
 
 it('does not remove unnecessary prefixes on request', () => {
   for (let type of ['transition', 'values', 'fullscreen']) {
-    let keeper = autoprefixer({ browsers: [], remove: false })
+    let keeper = autoprefixer({ overrideBrowserslist: [], remove: false })
     let css = read(type + '.out')
     expect(postcss([keeper]).process(css).css).toEqual(css)
   }
@@ -324,7 +367,9 @@ it('does not remove unnecessary prefixes on request', () => {
 
 it('does not add prefixes on request', () => {
   for (let type of ['transition', 'values', 'fullscreen']) {
-    let remover = autoprefixer({ browsers: ['Opera 12'], add: false })
+    let remover = autoprefixer({
+      overrideBrowserslist: ['Opera 12'], add: false
+    })
     let unprefixed = read(type)
     expect(postcss([remover]).process(unprefixed).css).toEqual(unprefixed)
   }
@@ -335,7 +380,8 @@ it('prevents doubling prefixes', () => {
     let processor = postcss([prefixer(type)])
     let input = read(type)
     let output = read(type + '.out')
-    expect(processor.process(processor.process(input)).css).toEqual(output)
+    let result = processor.process(processor.process(input)).css
+    expect(universalizer(result)).toEqual(universalizer(output))
   }
 })
 
@@ -362,13 +408,13 @@ it('parses difficult files', () => {
 it('marks parsing errors', () => {
   expect(() => {
     postcss([cleaner]).process('a {').css
-  }).toThrowError('<css input>:1:1: Unclosed block')
+  }).toThrow('<css input>:1:1: Unclosed block')
 })
 
 it('shows file name in parse error', () => {
   expect(() => {
     postcss([cleaner]).process('a {', { from: 'a.css' }).css
-  }).toThrowError(/a.css:1:1: /)
+  }).toThrow(/a.css:1:1: /)
 })
 
 it('uses browserslist config', () => {
@@ -408,13 +454,15 @@ it('takes values from other PostCSS plugins', () => {
 
 it('has option to disable @supports support', () => {
   let css = '@supports (cursor: grab) {}'
-  let instance = autoprefixer({ browsers: ['Chrome 28'], supports: false })
+  let instance = autoprefixer({
+    overrideBrowserslist: ['Chrome 28'], supports: false
+  })
   let result = postcss([instance]).process(css)
   expect(result.css).toEqual(css)
 })
 
 it('has disabled grid options by default', () => {
-  let ap = autoprefixer({ browsers: ['Edge 12', 'IE 10'] })
+  let ap = autoprefixer({ overrideBrowserslist: ['Edge 12', 'IE 10'] })
   let input = read('grid')
   let output = read('grid.disabled')
   let result = postcss([ap]).process(input)
@@ -423,37 +471,60 @@ it('has disabled grid options by default', () => {
 
 it('has different outputs for different grid options', () => {
   function ap (gridValue) {
-    return autoprefixer({ browsers: ['Edge 12', 'IE 10'], grid: gridValue })
+    return autoprefixer({
+      overrideBrowserslist: ['Edge 12', 'IE 10'], grid: gridValue
+    })
   }
   let input = read('grid-options')
   let outputAutoplace = read('grid-options.autoplace.out')
   let outputNoAutoplace = read('grid-options.no-autoplace.out')
   let outputDisabled = read('grid-options.disabled.out')
 
-  let resultAutoplace = postcss([ap('autoplace')]).process(input)
-  let resultNoAutoplace = postcss([ap('no-autoplace')]).process(input)
-  let resultEnabled = postcss([ap(true)]).process(input)
-  let resultDisabled = postcss([ap(false)]).process(input)
+  let resultAutoplace = postcss([ap('autoplace')]).process(input).css
+  let resultNoAutoplace = postcss([ap('no-autoplace')]).process(input).css
+  let resultEnabled = postcss([ap(true)]).process(input).css
+  let resultDisabled = postcss([ap(false)]).process(input).css
 
   // output for grid: 'autoplace'
-  expect(resultAutoplace.css).toEqual(outputAutoplace)
+  expect(resultAutoplace).toEqual(outputAutoplace)
   // output for grid: 'no-autoplace'
-  expect(resultNoAutoplace.css).toEqual(outputNoAutoplace)
+  expect(resultNoAutoplace).toEqual(outputNoAutoplace)
   // output for grid: true is the same as for 'no-autoplace'
-  expect(resultEnabled.css).toEqual(outputNoAutoplace)
+  expect(resultEnabled).toEqual(outputNoAutoplace)
   // output for grid: false
-  expect(resultDisabled.css).toEqual(outputDisabled)
+  expect(resultDisabled).toEqual(outputDisabled)
+})
+
+it('has different outputs for different grid environment variables', () => {
+  function ap (gridValue) {
+    process.env.AUTOPREFIXER_GRID = gridValue
+    return autoprefixer({ overrideBrowserslist: ['Edge 12', 'IE 10'] })
+  }
+  let input = read('grid-options')
+  let outputAutoplace = read('grid-options.autoplace.out')
+  let outputNoAutoplace = read('grid-options.no-autoplace.out')
+  let outputDisabled = read('grid-options.disabled.out')
+
+  let resultAutoplace = postcss([ap('autoplace')]).process(input).css
+  expect(resultAutoplace).toEqual(outputAutoplace)
+
+  let resultNoAutoplace = postcss([ap('no-autoplace')]).process(input).css
+  expect(resultNoAutoplace).toEqual(outputNoAutoplace)
 })
 
 it('has option to disable flexbox support', () => {
   let css = read('flexbox')
-  let instance = autoprefixer({ browsers: ['IE 10'], flexbox: false })
+  let instance = autoprefixer({
+    overrideBrowserslist: ['IE 10'], flexbox: false
+  })
   let result = postcss([instance]).process(css)
   expect(result.css).toEqual(css)
 })
 
 it('has option to disable 2009 flexbox support', () => {
-  let ap = autoprefixer({ browsers: ['Chrome > 19'], flexbox: 'no-2009' })
+  let ap = autoprefixer({
+    overrideBrowserslist: ['Chrome > 19'], flexbox: 'no-2009'
+  })
   let css = 'a{flex:1;transition:flex}'
   let result = postcss([ap]).process(css)
   expect(result.css).toEqual('a{' +
@@ -464,7 +535,7 @@ it('has option to disable 2009 flexbox support', () => {
 })
 
 it('returns inspect string', () => {
-  expect(autoprefixer({ browsers: ['chrome 25'] }).info())
+  expect(autoprefixer({ overrideBrowserslist: ['chrome 25'] }).info())
     .toMatch(/Browsers:\s+Chrome: 25/)
 })
 
@@ -475,13 +546,17 @@ it('uses browserslist config in inspect', () => {
 
 it('ignores unknown versions on request', () => {
   expect(() => {
-    autoprefixer({ browsers: ['ie 100'] }).info()
-  }).toThrowError()
+    autoprefixer({ overrideBrowserslist: ['ie 100'] }).info()
+  }).toThrow(/Unknown version 100 of ie/)
   expect(() => {
     autoprefixer({
-      browsers: ['ie 100'], ignoreUnknownVersions: true
+      overrideBrowserslist: ['ie 100'], ignoreUnknownVersions: true
     }).info()
-  }).not.toThrowError()
+  }).not.toThrow()
+})
+
+it('works with CSS Modules', () => {
+  postcss([autoprefixer()]).process(':export { selectors: _1q6ho_2 }').css
 })
 
 describe('hacks', () => {
@@ -502,15 +577,18 @@ describe('hacks', () => {
   it('supports all placeholders', () => check('placeholder'))
   it('supports image-rendering', () => check('image-rendering'))
   it('supports border-box mask', () => check('mask-border'))
+  it('supports mask-composite', () => check('mask-composite'))
   it('supports image-set()', () => check('image-set'))
   it('supports writing-mode', () => check('writing-mode'))
   it('supports cross-fade()', () => check('cross-fade'))
   it('ignores modern direction', () => check('animation'))
   it('supports overscroll-behavior', () => check('overscroll-behavior'))
   it('supports color-adjust', () => check('color-adjust'))
+  it('supports backdrop-filter', () => check('backdrop-filter'))
+  it('supports user-select hack for IE', () => check('user-select'))
 
   it('supports appearance for IE', () => {
-    let instance = autoprefixer({ browsers: 'Edge 15' })
+    let instance = autoprefixer({ overrideBrowserslist: 'Edge 15' })
     let result = postcss([instance]).process('a { appearance: none }')
     expect(result.css).toEqual(
       'a { -webkit-appearance: none; appearance: none }')
@@ -551,7 +629,7 @@ describe('hacks', () => {
       'a { display: flex; align-content: start; justify-content: end; }'
     let result = postcss([
       autoprefixer({
-        browsers: ['IE 11']
+        overrideBrowserslist: ['IE 11']
       })
     ]).process(css)
     expect(result.css).toEqual(css)
@@ -642,8 +720,16 @@ describe('hacks', () => {
       'autoprefixer: <css input>:140:3: IE does not support place-items ' +
         'on grid containers. Try using place-self on child elements ' +
         'instead: .warn_place_items > * { place-self: start end }',
-      'autoprefixer: <css input>:164:3: grid-auto-flow is not supported by IE'
+      'autoprefixer: <css input>:164:3: grid-auto-flow is not supported by IE',
+      'autoprefixer: <css input>:186:26: Autoprefixer currently does not ' +
+        'support line names. Try using grid-template-areas instead.'
     ])
+
+    let input2 = read('grid-template')
+    let output2 = read('grid-template.out')
+    let instance2 = prefixer('grid-template')
+    let result2 = postcss([instance2]).process(input2)
+    expect(result2.css).toEqual(output2)
   })
 
   it('supports grid autoplacement', () => {
@@ -673,7 +759,9 @@ describe('hacks', () => {
 
   it('shows Grid warnings only for IE', () => {
     let input = 'a { grid-template-rows: repeat(auto-fit, 1px) }'
-    let instance = autoprefixer({ browsers: 'chrome 27', grid: true })
+    let instance = autoprefixer({
+      overrideBrowserslist: 'chrome 27', grid: true
+    })
     let result = postcss([instance]).process(input)
     expect(result.warnings()).toEqual([])
   })
@@ -752,7 +840,9 @@ describe('hacks', () => {
     let input = 'a{ ' +
                 'backface-visibility: hidden; ' +
                 'transform-style: preserve-3d }'
-    let ap = autoprefixer({ browsers: ['Safari 9'], flexbox: false })
+    let ap = autoprefixer({
+      overrideBrowserslist: ['Safari 9'], flexbox: false
+    })
     expect(postcss([ap]).process(input).css).toEqual(
       'a{ ' +
       '-webkit-backface-visibility: hidden; ' +
@@ -771,5 +861,12 @@ describe('hacks', () => {
         'autoprefixer: <css input>:26:3: Replace text-decoration-skip: ink ' +
         'to text-decoration-skip-ink: auto, because spec had been changed'
       ])
+  })
+
+  it('supports -webkit-line-clamp', () => {
+    let input = read('webkit-line-clamp')
+    let result = postcss([cleaner]).process(input)
+    expect(result.css).toEqual(input)
+    expect(result.warnings()).toHaveLength(0)
   })
 })

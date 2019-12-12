@@ -22,7 +22,14 @@ gulp.task('build:lib', gulp.series('clean', () => {
 gulp.task('build:docs', () => {
   let ignore = require('fs').readFileSync('.npmignore').toString()
     .trim().split(/\n+/)
-    .concat(['.npmignore', 'index.js', 'package.json', 'logo.svg', 'AUTHORS'])
+    .concat([
+      '.npmignore',
+      'index.js',
+      'package.json',
+      'logo.svg',
+      'AUTHORS',
+      'node_modules'
+    ])
     .map(i => '!' + i)
 
   return gulp.src(['*'].concat(ignore))
@@ -45,8 +52,8 @@ gulp.task('build:package', () => {
       delete json.jest
       delete json.browserslist
       delete json.eslintConfig
+      delete json.husky
       delete json['size-limit']
-      delete json['husky']
       delete json['lint-staged']
       delete json.dependencies['@babel/register']
       return json
